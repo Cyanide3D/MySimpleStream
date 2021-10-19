@@ -54,11 +54,11 @@ public class SimpleVarStream<E> {
         executor.execute(consumer::accept);
     }
 
-    public <R> R collect(MyCollector<R, E> collector) {
+    public <R, W> W collect(MyCollector<R, E, W> collector) {
         R col = collector.getSupplier().get();
-        executor.execute(value -> collector.getConsumer().accept(col, value));
+        executor.execute(value -> collector.getAccumulator().accept(col, value));
 
-        return col;
+        return collector.getFinisher().apply(col);
     }
 
 }
